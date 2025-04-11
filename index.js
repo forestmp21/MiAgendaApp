@@ -1,18 +1,22 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // <- usamos bcryptjs
+const bcrypt = require('bcryptjs'); // Reemplazo seguro para bcrypt
 const jwt = require('jsonwebtoken');
+const cors = require('cors'); // ✅ Importamos CORS
+
 const Usuario = require('./models/Usuario');
 const Tarea = require('./models/Tarea');
 const verificarToken = require('./middlewares/verificarToken');
 const path = require('path');
-const cors = require('cors');
-app.use(cors());
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ Permitimos solicitudes desde cualquier origen
+app.use(cors());
+
+// Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -21,7 +25,7 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ Conectado a MongoDB Atlas'))
   .catch(err => console.error('❌ Error de conexión:', err));
 
-// Ruta principal
+// Ruta raíz
 app.get('/', (req, res) => {
   res.send('🌐 MiAgendaApp backend funcionando');
 });
@@ -97,7 +101,7 @@ app.get('/tareas', verificarToken, async (req, res) => {
   }
 });
 
-// Completar tarea (toggle)
+// Completar tarea
 app.patch('/tareas/:id/completar', verificarToken, async (req, res) => {
   try {
     const tarea = await Tarea.findById(req.params.id);
@@ -122,6 +126,7 @@ app.delete('/tareas/:id', verificarToken, async (req, res) => {
   }
 });
 
+// Iniciar servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
