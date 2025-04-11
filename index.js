@@ -7,6 +7,8 @@ const Usuario = require('./models/Usuario');
 const Tarea = require('./models/Tarea');
 const verificarToken = require('./middlewares/verificarToken');
 const path = require('path');
+const cors = require('cors');
+app.use(cors());
 
 const app = express();
 const PORT = process.env.PORT || 3000;
