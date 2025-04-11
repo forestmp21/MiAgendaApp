@@ -1,4 +1,4 @@
-const servidor = 'http://localhost:3000';
+const servidor = 'https://miagenda-backend.onrender.com'; // tu nueva URL de Render
 
 // Verificación de sesión
 const usuarioActual = localStorage.getItem('usuario');
