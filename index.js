@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs'); // <- usamos bcryptjs
 const jwt = require('jsonwebtoken');
 const Usuario = require('./models/Usuario');
 const Tarea = require('./models/Tarea');
@@ -9,22 +9,22 @@ const verificarToken = require('./middlewares/verificarToken');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Conexión a MongoDB Atlas
+// Conexión a MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ Conectado a MongoDB Atlas'))
   .catch(err => console.error('❌ Error de conexión:', err));
 
-// Ruta raíz
+// Ruta principal
 app.get('/', (req, res) => {
-  res.send('MiAgendaApp backend funcionando 🚀');
+  res.send('🌐 MiAgendaApp backend funcionando');
 });
 
-// Registro de usuarios
+// Registro
 app.post('/register', async (req, res) => {
   const { usuario, contraseña } = req.body;
 
@@ -48,7 +48,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Login con generación de JWT
+// Login con JWT
 app.post('/login', async (req, res) => {
   const { usuario, contraseña } = req.body;
 
@@ -83,7 +83,7 @@ app.post('/tareas', verificarToken, async (req, res) => {
   }
 });
 
-// Obtener tareas del usuario autenticado
+// Obtener tareas
 app.get('/tareas', verificarToken, async (req, res) => {
   const usuario = req.usuario;
 
@@ -120,7 +120,6 @@ app.delete('/tareas/:id', verificarToken, async (req, res) => {
   }
 });
 
-// Iniciar servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
